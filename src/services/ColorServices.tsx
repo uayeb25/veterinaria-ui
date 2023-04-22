@@ -28,3 +28,11 @@ export async function deleteColor(id: number): Promise<void> {
         `${URI}/api/colores/${id}`
     );
 }
+
+export async function updateColor(id: number, color: string): Promise<ColorType> {
+    const response = await axios.put<ColorType>(
+        `${URI}/api/colores/${id}`
+        , { descripcion: color } // body or payload
+    );
+    return response.data;
+}

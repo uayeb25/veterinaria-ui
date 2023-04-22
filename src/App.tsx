@@ -2,6 +2,7 @@ import React from 'react';
 import logo from './logo.svg';
 
 import Color from './pages/Color';
+import ExampleSelect from './pages/ExampleSelect';
 
 import {
   BrowserRouter as Router,
@@ -27,6 +28,11 @@ function App() {
               Colors
             </Link>            
           </li>
+          <li>            
+            <Link to="/selects">
+              Selects Example
+            </Link>            
+          </li>
         </ul>
       </nav>
 
@@ -38,6 +44,10 @@ function App() {
         <Route 
           path="/home" 
           element={<h1>Hello OOP Student</h1>} 
+        />
+        <Route 
+          path="/selects" 
+          element={ <ExampleSelect />} 
         />
       </Routes>
 

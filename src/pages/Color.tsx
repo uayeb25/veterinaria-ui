@@ -10,13 +10,16 @@ import {
     , getColors
     , addColor
     , deleteColor
+    , updateColor
  } from "../services/ColorServices"
 
 
 function Color() {
 
     const [colors, setColors] = useState<ColorType[]>([]);
-    const [color, setColor] = useState<string>("");   
+    const [color, setColor] = useState<string>("");
+    const [id, setId] = useState<number>(0);
+    const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
 
     const changeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,6 +35,24 @@ function Color() {
     const deleteColorEvent = async (id: number) => {
         await deleteColor(id);
         setColors(colors.filter((color) => color.id !== id));
+    }
+
+    const startEditColor = (id: number, descripcion: string) => {
+        setIsUpdating(true);
+        setColor(descripcion);
+        setId(id);
+    }
+
+    const stopEditColor = () => {
+        setIsUpdating(false);
+        setColor("");
+    }
+
+    const updateColorEvent = async () => {
+        const newColor = await updateColor(id, color);
+        setColors(colors.map((color) => color.id === id ? newColor : color));
+        setIsUpdating(false);
+        setColor("");
     }
 
     useEffect(() => {
@@ -56,22 +77,40 @@ function Color() {
             />
             <button
                 disabled={ color.length == 0 }
-                onClick={addColorEvent}
+                onClick={ isUpdating ? updateColorEvent : addColorEvent }
             >
-                Add
+                { isUpdating ? "Update" : "Add" }
             </button>
+            
+            { 
+                isUpdating && 
+                <button
+                    onClick={stopEditColor}
+                >
+                    Cancel
+                </button>
+            }
+            
 
 
             <ul>
                 { colors.map((color) => (
                     <li key={color.id} >
                         { color.descripcion }
-                        <button onClick={
-                            () => deleteColorEvent(color.id)
-                        } >
+                        <button 
+                            onClick={
+                                () => deleteColorEvent(color.id)
+                            }
+                            disabled={isUpdating}
+                        >
                             Remove
                         </button>
-                        <button>
+                        <button
+                            disabled={isUpdating}
+                            onClick={
+                                () => startEditColor(color.id, color.descripcion)
+                            }
+                        >
                             Edit
                         </button>
                     </li>
